@@ -24,7 +24,7 @@ for url in image_urls[:5]:  # Solo mostramos las primeras 5 imágenes
 def buscar_pelicula(df, nombre=None, genero=None, actor=None):
     if nombre:
         df = df[df['name'].str.contains(nombre, case=False, na=False)]
-        st.write(
+        
     if genero:
         df = df[df['genres'].str.contains(genero, case=False, na=False)]
     if actor:
