@@ -11,57 +11,47 @@ import pandas as pd
 import streamlit as st
 
 # Lee el archivo CSV de posters
-dp = pd.read_csv('posters.csv', sep=',')
+dp = pd.read_csv('Archivos/posters.csv', sep=',')
+print(dp.head())  # Muestra las primeras filas para ver el contenido
+st.write(dp.head())  # Muestra las primeras filas para ver el contenido
 
 # Extrae las URLs de las imágenes (segunda columna, índice 1)
 image_urls = dp.iloc[:, 1]
 
+# Mostrar las primeras 5 imágenes usando Streamlit
+for url in image_urls[:5]:  # Tomamos solo las primeras 5 imágenes
 # Limitar la cantidad de imágenes mostradas a las primeras 5 para evitar sobrecargar el navegador
 for url in image_urls[:5]:  # Solo mostramos las primeras 5 imágenes
     st.image(url)  # Streamlit mostrará la imagen directamente desde la URL
 
 # Función para buscar películas por nombre, género o actor
-def buscar_pelicula(df, nombre=None, genero=None, actor=None):
-    if nombre:
-        df = df[df['name'].str.contains(nombre, case=False, na=False)]
-        
-    if genero:
-        df = df[df['genres'].str.contains(genero, case=False, na=False)]
-    if actor:
-        df = df[df['actors'].str.contains(actor, case=False, na=False)]
     return df
 
 # Cargar el archivo CSV de películas (con codificación y manejo de errores)
+df = pd.read_csv('Archivos/movies.csv', sep=',', encoding='ISO-8859-1', engine='python', on_bad_lines='skip').fillna(0)
 # Usamos `chunksize` para cargar el CSV en partes pequeñas
-df_chunks = pd.read_csv('movies.csv', sep=',', encoding='ISO-8859-1', engine='python', on_bad_lines='skip', chunksize=5000)
-
+df_chunks = pd.read_csv('Archivos/movies.csv', sep=',', encoding='ISO-8859-1', engine='python', on_bad_lines='skip', chunksize=5000)
 # Leer solo el primer chunk para evitar sobrecargar el servidor
 df = next(df_chunks).fillna(0)
 
 # Entrada del usuario para buscar una película
-titulo_seleccion = st.selectbox("Selecciona la película", df["title"].unique())
-st.write("### Título:", selected_movie["title"])
-st.write("**Fecha de Lanzamiento:**", selected_movie["release_date"])
-st.image(url_img +selected_movie["poster_path"], caption=selected_movie["title"])
-
-genero_buscar = st.text_input('Buscar por género:')
-actor_buscar = st.text_input('Buscar por actor:')
-
+pelicula_buscar = st.text_input('Buscar película por nombre:')
 # Filtrar el DataFrame basado en los criterios de búsqueda
 sapa = buscar_pelicula(df, nombre=pelicula_buscar, genero=genero_buscar, actor=actor_buscar)
 
-# Función para dejar reseñas (almacena en una lista o archivo)
-if st.button('Dejar una reseña'):
-    reseña = st.text_area('Escribe tu reseña:')
-    if reseña:
-        # Aquí puedes almacenar las reseñas, por ejemplo, en un archivo o base de datos
-        st.write(f'Reseña guardada: {reseña}')
-    else:
-        st.write('Por favor, escribe una reseña.')
+# Mostrar los resultados filtrados
+# Mostrar los resultados filtrados limitados a las primeras 10 filas
+if not sapa.empty:
+    st.write(sapa)
+    st.write(sapa.head(10))  # Muestra solo las primeras 10 filas para evitar grandes tablas
+else:
+    st.write("No se encontraron resultados para la búsqueda.")
+  st.write('Por favor, escribe una reseña.')
 
 # Mostrar trailers, sinopsis y reseñas promedio (si los tienes en tu CSV)
 # Limitar el número de filas para mostrar trailers y reseñas
 if 'trailer' in df.columns and 'synopsis' in df.columns and 'average_rating' in df.columns:
+    for index, row in sapa.iterrows():
     for index, row in sapa.head(5).iterrows():  # Limitar a las primeras 5 películas
         st.write(f"**Trailer**: {row['trailer']}")
         st.write(f"**Sinopsis**: {row['synopsis']}")
