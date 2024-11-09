@@ -11,7 +11,7 @@ import pandas as pd
 import streamlit as st
 
 # Lee el archivo CSV de posters
-dp = pd.read_csv('posters.txt', sep=',')
+dp = pd.read_csv('posters.csv', sep=',')
 
 # Extrae las URLs de las imágenes (segunda columna, índice 1)
 image_urls = dp.iloc[:, 1]
@@ -32,7 +32,7 @@ def buscar_pelicula(df, nombre=None, genero=None, actor=None):
 
 # Cargar el archivo CSV de películas (con codificación y manejo de errores)
 # Usamos `chunksize` para cargar el CSV en partes pequeñas
-df_chunks = pd.read_csv('movies.txt', sep=',', encoding='ISO-8859-1', engine='python', on_bad_lines='skip', chunksize=5000)
+df_chunks = pd.read_csv('movies.csv', sep=',', encoding='ISO-8859-1', engine='python', on_bad_lines='skip', chunksize=5000)
 
 # Leer solo el primer chunk para evitar sobrecargar el servidor
 df = next(df_chunks).fillna(0)
