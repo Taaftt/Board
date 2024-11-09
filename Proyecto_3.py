@@ -11,7 +11,7 @@ import pandas as pd
 import streamlit as st
 
 # Lee el archivo CSV de posters
-dp = pd.read_csv('posters.txt', sep=',')
+dp = pd.read_csv('posters.csv', sep=',')
 dp = pd.read_csv('posters.csv', sep=',')
 
 # Extrae las URLs de las imágenes (segunda columna, índice 1)
