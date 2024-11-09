@@ -24,6 +24,7 @@ for url in image_urls[:5]:  # Solo mostramos las primeras 5 imágenes
 def buscar_pelicula(df, nombre=None, genero=None, actor=None):
     if nombre:
         df = df[df['name'].str.contains(nombre, case=False, na=False)]
+        st.write(
     if genero:
         df = df[df['genres'].str.contains(genero, case=False, na=False)]
     if actor:
@@ -38,7 +39,11 @@ df_chunks = pd.read_csv('movies.csv', sep=',', encoding='ISO-8859-1', engine='py
 df = next(df_chunks).fillna(0)
 
 # Entrada del usuario para buscar una película
-pelicula_buscar = st.text_input('Buscar película por nombre:')
+titulo_seleccion = st.selectbox("Selecciona la película", df["title"].unique())
+st.write("### Título:", selected_movie["title"])
+st.write("**Fecha de Lanzamiento:**", selected_movie["release_date"])
+st.image(url_img +selected_movie["poster_path"], caption=selected_movie["title"])
+
 genero_buscar = st.text_input('Buscar por género:')
 actor_buscar = st.text_input('Buscar por actor:')
 
